@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -Eeuxo pipefail
+
+docker build --build-arg NPROC="$NPROC" -t wilsonzlin/timescale-rum --progress plain .
