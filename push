@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -Eeuxo pipefail
+
+docker push wilsonzlin/timescale-rum:$(jq -r .pg ./versions.json)-$(jq -r .rum ./versions.json)-$(jq -r .ts ./versions.json)
