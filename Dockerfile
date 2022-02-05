@@ -39,8 +39,8 @@ CMD sudo -u postgres initdb --pgdata=/pgdata --username=postgres && \
   cp /postgresql-init.conf /pgdata/postgresql.conf && \
   echo "local all postgres trust" > /pgdata/pg_hba.conf && \
   sudo -u postgres pg_ctl -D /pgdata --log=/pgdata/server.log --wait start && \
-  psql --no-readline --host /pgsock --user postgres --db postgres --command "CREATE USER "\""$POSTGRES_USER"\"" WITH SUPERUSER ENCRYPTED PASSWORD '$POSTGRES_PASSWORD'" && \
-  psql --no-readline --host /pgsock --user postgres --db postgres --command "CREATE DATABASE "\""$POSTGRES_DB"\"" WITH OWNER = "\""$POSTGRES_USER"\""" && \
+  psql --no-readline --host /pgsock --user postgres --db postgres --command "CREATE USER "\""$POSTGRES_USER"\"" WITH SUPERUSER ENCRYPTED PASSWORD '$POSTGRES_PASSWORD'" >> /pgdata/server.log && \
+  psql --no-readline --host /pgsock --user postgres --db postgres --command "CREATE DATABASE "\""$POSTGRES_DB"\"" WITH OWNER = "\""$POSTGRES_USER"\""" >> /pgdata/server.log && \
   cp /postgresql.conf /pgdata/postgresql.conf && \
   echo "host $POSTGRES_DB $POSTGRES_USER 0.0.0.0/0 scram-sha-256" > /pgdata/pg_hba.conf && \
   sudo -u postgres pg_ctl -D /pgdata --log=/pgdata/server.log --wait restart && \
