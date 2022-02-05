@@ -29,15 +29,19 @@ RUN make -j $NPROC
 RUN make install
 RUN rm -rf /tmp/ts
 
-ADD pg_hba.conf /pg_hba.conf
+ADD postgresql-init.conf /postgresql-init.conf
 ADD postgresql.conf /postgresql.conf
 RUN useradd --system --user-group --shell /sbin/nologin postgres
 RUN mkdir /pgdata && chown postgres:postgres /pgdata
+RUN mkdir /pgsock && chown postgres:postgres /pgsock
 
 CMD sudo -u postgres initdb --pgdata=/pgdata --username=postgres && \
-  cp /pg_hba.conf /pgdata/pg_hba.conf && \
-  cp /postgresql.conf /pgdata/postgresql.conf && \
+  cp /postgresql-init.conf /pgdata/postgresql.conf && \
+  echo "local all postgres trust" > /pgdata/pg_hba.conf && \
   sudo -u postgres pg_ctl -D /pgdata --log=/pgdata/server.log --wait start && \
-  psql --no-readline --host 127.0.0.1 --user postgres --db postgres --command "CREATE USER "\""$POSTGRES_USER"\"" WITH SUPERUSER ENCRYPTED PASSWORD '$POSTGRES_PASSWORD'" && \
-  psql --no-readline --host 127.0.0.1 --user postgres --db postgres --command "CREATE DATABASE "\""$POSTGRES_DB"\"" WITH OWNER = "\""$POSTGRES_USER"\""" && \
-  tail -fn 1000 /pgdata/server.log
+  psql --no-readline --host /pgsock --user postgres --db postgres --command "CREATE USER "\""$POSTGRES_USER"\"" WITH SUPERUSER ENCRYPTED PASSWORD '$POSTGRES_PASSWORD'" && \
+  psql --no-readline --host /pgsock --user postgres --db postgres --command "CREATE DATABASE "\""$POSTGRES_DB"\"" WITH OWNER = "\""$POSTGRES_USER"\""" && \
+  cp /postgresql.conf /pgdata/postgresql.conf && \
+  echo "host $POSTGRES_DB $POSTGRES_USER 0.0.0.0/0 scram-sha-256" > /pgdata/pg_hba.conf && \
+  sudo -u postgres pg_ctl -D /pgdata --log=/pgdata/server.log --wait restart && \
+  tail -fn +1 /pgdata/server.log
