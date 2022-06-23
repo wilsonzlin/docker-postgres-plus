@@ -2,4 +2,6 @@
 
 set -Eeuxo pipefail
 
-docker push wilsonzlin/timescale-rum:$(jq -r .pg ./versions.json)-$(jq -r .rum ./versions.json)-$(jq -r .ts ./versions.json)
+source "./image.sh"
+
+docker push "$POSTGRES_PLUS_IMAGE_TAG"

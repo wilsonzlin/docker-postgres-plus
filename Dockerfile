@@ -1,4 +1,5 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
+ARG NPROC
 
 RUN apt -yqq update && apt -yqq install cmake gcc libssl-dev make sudo zlib1g-dev
 
@@ -28,6 +29,14 @@ WORKDIR /tmp/ts/build
 RUN make -j $NPROC
 RUN make install
 RUN rm -rf /tmp/ts
+
+WORKDIR /tmp
+ADD vector.tar.gz .
+RUN mv -v pgvector-* vector
+WORKDIR /tmp/vector
+RUN make -j $NPROC
+RUN make install
+RUN rm -rf /tmp/vector
 
 ADD postgresql-init.conf /postgresql-init.conf
 ADD postgresql.conf /postgresql.conf

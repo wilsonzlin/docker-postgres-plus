@@ -4,8 +4,9 @@ set -Eeuxo pipefail
 
 pushd "$(dirname "$0")" >/dev/null
 
-wget -O pg.tar.gz "https://ftp.postgresql.org/pub/source/v14.1/postgresql-$(jq -r .pg ./versions.json).tar.bz2"
+wget -O pg.tar.gz "https://ftp.postgresql.org/pub/source/v$(jq -r .pg ./versions.json)/postgresql-$(jq -r .pg ./versions.json).tar.bz2"
 wget -O rum.tar.gz "https://github.com/postgrespro/rum/archive/refs/tags/$(jq -r .rum ./versions.json).tar.gz"
 wget -O ts.tar.gz "https://github.com/timescale/timescaledb/archive/refs/tags/$(jq -r .ts ./versions.json).tar.gz"
+wget -O vector.tar.gz "https://github.com/pgvector/pgvector/archive/refs/tags/v$(jq -r .vector ./versions.json).tar.gz"
 
 popd >/dev/null

@@ -2,4 +2,6 @@
 
 set -Eeuxo pipefail
 
-docker build --build-arg NPROC="$NPROC" -t wilsonzlin/timescale-rum:latest -t wilsonzlin/timescale-rum:$(jq -r .pg ./versions.json)-$(jq -r .rum ./versions.json)-$(jq -r .ts ./versions.json) --progress plain .
+source "./image.sh"
+
+docker build --build-arg NPROC="$NPROC" -t "$POSTGRES_PLUS_IMAGE_NAME:latest" -t "$POSTGRES_PLUS_IMAGE_TAG" --progress plain .
