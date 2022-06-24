@@ -4,4 +4,4 @@ set -Eeuxo pipefail
 
 source "./image.sh"
 
-docker build --build-arg NPROC="$NPROC" -t "$POSTGRES_PLUS_IMAGE_NAME:latest" -t "$POSTGRES_PLUS_IMAGE_TAG" --progress plain .
+docker build --build-arg NPROC="${NPROC:-}" -t "$POSTGRES_PLUS_IMAGE_NAME:latest" -t "$POSTGRES_PLUS_IMAGE_TAG" --progress plain .
