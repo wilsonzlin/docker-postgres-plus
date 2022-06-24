@@ -1,13 +1,10 @@
 name: Build and publish Docker image
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 jobs:
-  cli:
+  image:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
